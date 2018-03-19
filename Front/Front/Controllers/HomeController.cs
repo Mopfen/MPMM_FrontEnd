@@ -39,7 +39,6 @@ namespace Front.Controllers
         {
             ListOfValues lst = new ListOfValues();
             lst.listaObiektow = null;
-            //List<Value> values = null;
             var client = new HttpClient();
             var task = client.GetAsync("http://mpmmtest.azurewebsites.net/api/values")
               .ContinueWith((taskwithresponse) =>
@@ -50,25 +49,15 @@ namespace Front.Controllers
                   lst = JsonConvert.DeserializeObject<ListOfValues>(jsonString.Result);
               });
             task.Wait();
-            string message = "Atrybut | Wartość <br>";
-            foreach(var value in lst.listaObiektow)
+            string message = "<table style='width:70%'><tr><td>ID</td><td>Nazwa</td><td>Tresc</td></tr>";
+            foreach (var value in lst.listaObiektow.OrderBy(x => x.id))
             {
-                message += "ID: " + value.id + "<br>";
-                message += "Nazwa: " + value.nazwa + "<br>";
-                message += "Tresc: " + value.tresc + "<br>";
+                message += "<tr><td>" + value.id + "</td>";
+                message += "<td>" + value.nazwa + "</td>";
+                message += "<td>" + value.tresc + "</td></tr>";
             }
+            message += "</table>";
             return message;
-            /*string page = "http://mpmmtest.azurewebsites.net/api/values/1";
-            using (HttpClient client = new HttpClient())
-            using (HttpResponseMessage respone = await client.GetAsync(page))
-            using (HttpContent content = respone.Content)
-            {
-                string data = await content.ReadAsStringAsync();
-
-                if (data != null)
-                    message = data;
-                loaded = true;
-            }*/
         }
 
         public IActionResult Error()
