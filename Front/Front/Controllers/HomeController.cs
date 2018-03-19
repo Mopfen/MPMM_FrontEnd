@@ -37,7 +37,9 @@ namespace Front.Controllers
 
         private string loadData()
         {
-            List<ListOfValues> values = null;
+            ListOfValues lst = new ListOfValues();
+            lst.listaObiektow = null;
+            //List<Value> values = null;
             var client = new HttpClient();
             var task = client.GetAsync("http://mpmmtest.azurewebsites.net/api/values")
               .ContinueWith((taskwithresponse) =>
@@ -45,13 +47,15 @@ namespace Front.Controllers
                   var response = taskwithresponse.Result;
                   var jsonString = response.Content.ReadAsStringAsync();
                   jsonString.Wait();
-                  values = JsonConvert.DeserializeObject<List<ListOfValues>>(jsonString.Result);
+                  lst = JsonConvert.DeserializeObject<ListOfValues>(jsonString.Result);
               });
             task.Wait();
             string message = "Atrybut | Wartość <br>";
-            foreach (var value in values)
+            foreach(var value in lst.listaObiektow)
             {
-                message += "ID: " + value.listaObiektow + "<br>";
+                message += "ID: " + value.id + "<br>";
+                message += "Nazwa: " + value.nazwa + "<br>";
+                message += "Tresc: " + value.tresc + "<br>";
             }
             return message;
             /*string page = "http://mpmmtest.azurewebsites.net/api/values/1";
